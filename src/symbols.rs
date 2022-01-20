@@ -58,11 +58,8 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::utils::assert_close;
     pub type Func<T> = fn(Vec<T>) -> T;
-
-    fn assert_close(a: f64, b: f64) {
-        assert!(f64::abs(a - b) < 1e-6);
-    }
 
     #[test]
     fn success() {

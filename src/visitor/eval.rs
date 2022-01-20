@@ -149,10 +149,7 @@ fn factorial(num: u64) -> u64 {
 mod tests {
     use super::*;
     use crate::parser::calc_parser;
-
-    fn assert_close(a: f64, b: f64) {
-        assert!(f64::abs(a - b) < 1e-6);
-    }
+    use crate::utils::assert_close;
 
     #[test]
     fn calc_number() {
