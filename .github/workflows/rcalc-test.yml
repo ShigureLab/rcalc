@@ -1,0 +1,22 @@
+name: Rcalc Test
+
+on: [push, pull_request]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  test-rcalc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install LLVM and Clang
+        uses: KyleMayes/install-llvm-action@v1.5.0
+        with:
+          version: "13.0"
+          cached: true
+      - name: Build
+        run: cargo test
+      - name: Run tests
+        run: cargo test --release --verbose

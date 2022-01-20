@@ -1,0 +1,12 @@
+[package]
+name = "rcalc"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+
+[dependencies]
+inkwell = { git = "https://github.com/TheDan64/inkwell", branch = "master", features = [
+  "llvm13-0",
+] }
+peg = "0.8.0"
