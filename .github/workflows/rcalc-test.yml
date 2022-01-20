@@ -11,12 +11,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Update rust toolchain
+        run: rustup update
       - name: Install LLVM and Clang
-        uses: KyleMayes/install-llvm-action@v1.5.0
+        uses: KyleMayes/install-llvm-action@v1.4.1
         with:
-          version: "13.0"
+          version: "12.0"
           cached: true
       - name: Build
-        run: cargo test
+        run: cargo build --release --verbose
       - name: Run tests
         run: cargo test --release --verbose

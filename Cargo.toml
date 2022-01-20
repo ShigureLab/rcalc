@@ -7,6 +7,6 @@ edition = "2021"
 
 [dependencies]
 inkwell = { git = "https://github.com/TheDan64/inkwell", branch = "master", features = [
-  "llvm13-0",
+  "llvm12-0",
 ] }
 peg = "0.8.0"
