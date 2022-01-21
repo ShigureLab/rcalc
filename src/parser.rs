@@ -7,13 +7,10 @@ peg::parser! {
         pub rule program() -> Expr
             = __ e:expr() __ { e }
 
-        pub rule expr() -> Expr
-            = sum_expr()
-
         #[cache_left_rec]
-        pub rule sum_expr() -> Expr
-            = a:sum_expr() _ "+" _ b:term() { BinaryArithmetic::new(BinaryOp::Add, a, b).into() }
-            / a:sum_expr() _ "-" _ b:term() { BinaryArithmetic::new(BinaryOp::Sub, a, b).into() }
+        pub rule expr() -> Expr
+            = a:expr() _ "+" _ b:term() { BinaryArithmetic::new(BinaryOp::Add, a, b).into() }
+            / a:expr() _ "-" _ b:term() { BinaryArithmetic::new(BinaryOp::Sub, a, b).into() }
             / term()
 
         #[cache_left_rec]
@@ -62,9 +59,9 @@ mod tests {
     use super::*;
 
     #[test]
-    fn sum_expr() {
+    fn expr() {
         assert_eq!(
-            calc_parser::sum_expr("1 + 9 / 10"),
+            calc_parser::expr("1 + 9 / 10"),
             Ok(BinaryArithmetic::new(
                 BinaryOp::Add,
                 Atom::Number(1 as f64).into(),
@@ -78,7 +75,7 @@ mod tests {
             .into())
         );
         assert_eq!(
-            calc_parser::sum_expr("(1 + 9) / 10"),
+            calc_parser::expr("(1 + 9) / 10"),
             Ok(BinaryArithmetic::new(
                 BinaryOp::Div,
                 BinaryArithmetic::new(
