@@ -154,8 +154,8 @@ impl<'ctx> Visitor<FloatValue<'ctx>> for CalculatorJIT<'ctx> {
     }
 
     fn visit_binary(&mut self, b: &BinaryArithmetic) -> FloatValue<'ctx> {
-        let lhs = self.visit_expr(&b.left);
-        let rhs = self.visit_expr(&b.right);
+        let lhs = self.visit_expr(&b.lhs);
+        let rhs = self.visit_expr(&b.rhs);
         match b.op {
             BinaryOp::Add => self.builder.build_float_add(lhs, rhs, "add"),
             BinaryOp::Sub => self.builder.build_float_sub(lhs, rhs, "sub"),

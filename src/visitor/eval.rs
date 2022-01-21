@@ -100,8 +100,8 @@ impl Visitor<()> for Calculator {
     }
 
     fn visit_binary(&mut self, b: &BinaryArithmetic) {
-        self.visit_expr(&b.left);
-        self.visit_expr(&b.right);
+        self.visit_expr(&b.lhs);
+        self.visit_expr(&b.rhs);
 
         let rhs = self.operand_stack.pop().unwrap();
         let lhs = self.operand_stack.pop().unwrap();

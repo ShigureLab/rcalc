@@ -55,8 +55,8 @@ impl Visitor<()> for PrettyPrinter {
             BinaryOp::Div => println!("{indent}Div"),
         }
         self.indent_level += 1;
-        self.visit_expr(&b.left);
-        self.visit_expr(&b.right);
+        self.visit_expr(&b.lhs);
+        self.visit_expr(&b.rhs);
         self.indent_level -= 1;
     }
 

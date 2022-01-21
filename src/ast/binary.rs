@@ -11,13 +11,13 @@ pub enum BinaryOp {
 #[derive(Debug, PartialEq, Clone)]
 pub struct BinaryArithmetic {
     pub op: BinaryOp,
-    pub left: Expr,
-    pub right: Expr,
+    pub lhs: Expr,
+    pub rhs: Expr,
 }
 
 impl BinaryArithmetic {
-    pub fn new(op: BinaryOp, left: Expr, right: Expr) -> Self {
-        BinaryArithmetic { op, left, right }
+    pub fn new(op: BinaryOp, lhs: Expr, rhs: Expr) -> Self {
+        BinaryArithmetic { op, lhs, rhs }
     }
 }
 
