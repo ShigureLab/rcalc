@@ -7,7 +7,8 @@ pub type Func<T> = fn(Vec<T>) -> T;
 
 #[derive(Debug)]
 pub struct Calculator {
-    symbols: SymbolTable<f64, Func<f64>>,
+    variables: SymbolTable<f64>,
+    functions: SymbolTable<Func<f64>>,
     operand_stack: Vec<f64>,
 }
 
@@ -20,17 +21,18 @@ pub enum CalculatorError {
 impl Calculator {
     pub fn new() -> Self {
         Calculator {
-            symbols: SymbolTable::new(),
+            variables: SymbolTable::new(),
+            functions: SymbolTable::new(),
             operand_stack: Vec::new(),
         }
     }
 
     pub fn define_variable(&mut self, name: &String, value: f64) -> Result<(), SymbolError> {
-        self.symbols.define_variable(name, value)
+        self.variables.define(name, value)
     }
 
     pub fn define_function(&mut self, name: &String, value: Func<f64>) -> Result<(), SymbolError> {
-        self.symbols.define_function(name, value)
+        self.functions.define(name, value)
     }
 
     pub fn preset(&mut self) -> Result<(), SymbolError> {
@@ -119,7 +121,7 @@ impl Visitor<()> for Calculator {
             self.visit_expr(arg);
         }
         let func_name = &f.name;
-        let func = self.symbols.get_function(func_name).unwrap();
+        let func = self.functions.get(func_name).unwrap();
         let mut argv = Vec::new();
         for _ in 0..argc {
             argv.push(self.operand_stack.pop().unwrap());
@@ -130,9 +132,7 @@ impl Visitor<()> for Calculator {
 
     fn visit_atom(&mut self, a: &Atom) {
         match a {
-            Atom::Ident(ref id) => self
-                .operand_stack
-                .push(self.symbols.get_variable(id).unwrap()),
+            Atom::Ident(ref id) => self.operand_stack.push(self.variables.get(id).unwrap()),
             Atom::Number(ref n) => self.operand_stack.push(*n),
         }
     }

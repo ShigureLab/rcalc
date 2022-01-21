@@ -18,7 +18,7 @@ pub type FuncLLVM<'a, T> = fn(Vec<T>, &Builder<'a>) -> T;
 
 #[derive(Debug)]
 pub struct CalculatorJIT<'ctx> {
-    symbols: SymbolTable<PointerValue<'ctx>, ()>,
+    variables: SymbolTable<PointerValue<'ctx>>,
     context: &'ctx Context,
     module: Module<'ctx>,
     builder: Builder<'ctx>,
@@ -32,7 +32,7 @@ impl<'ctx> CalculatorJIT<'ctx> {
             .create_jit_execution_engine(OptimizationLevel::None)
             .unwrap();
         CalculatorJIT {
-            symbols: SymbolTable::new(),
+            variables: SymbolTable::new(),
             context: &context,
             module,
             builder: context.create_builder(),
@@ -54,12 +54,12 @@ impl<'ctx> CalculatorJIT<'ctx> {
         var.set_initializer(&initial_value);
 
         let alloca = var.as_pointer_value();
-        self.symbols.define_variable(name, alloca)?;
+        self.variables.define(name, alloca)?;
         Ok(())
     }
 
     fn get_variable(&mut self, name: &String) -> Result<FloatValue<'ctx>, SymbolError> {
-        let alloca = self.symbols.get_variable(name)?;
+        let alloca = self.variables.get(name)?;
         let var = self
             .builder
             .build_load(alloca, name.as_str())
