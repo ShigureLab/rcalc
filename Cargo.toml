@@ -8,6 +8,6 @@ edition = "2021"
 [dependencies]
 clap = { version = "3.1.5", features = ["derive"] }
 inkwell = { git = "https://github.com/TheDan64/inkwell", branch = "master", features = [
-  "llvm12-0",
+  "llvm13-0",
 ] }
 peg = "0.8.0"
