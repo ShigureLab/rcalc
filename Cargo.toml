@@ -6,7 +6,7 @@ edition = "2021"
 [features]
 
 [dependencies]
-clap = { version = "3.1.0", features = ["derive"] }
+clap = { version = "3.1.1", features = ["derive"] }
 inkwell = { git = "https://github.com/TheDan64/inkwell", branch = "master", features = [
   "llvm12-0",
 ] }
