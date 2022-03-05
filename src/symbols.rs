@@ -21,15 +21,15 @@ where
         }
     }
 
-    pub fn define(&mut self, name: &String, value: T) -> Result<(), SymbolError> {
+    pub fn define(&mut self, name: &str, value: T) -> Result<(), SymbolError> {
         if self.map.contains_key(name) {
             return Err(SymbolError::ReDefinition);
         }
-        self.map.insert(name.clone(), value);
+        self.map.insert(name.into(), value);
         Ok(())
     }
 
-    pub fn get(&mut self, name: &String) -> Result<T, SymbolError> {
+    pub fn get(&mut self, name: &str) -> Result<T, SymbolError> {
         if !self.map.contains_key(name) {
             return Err(SymbolError::UnDefinition);
         }
@@ -44,11 +44,11 @@ mod tests {
 
     #[test]
     fn success() {
-        let name = "a".into();
+        let name = "a";
         let a = 1.0;
         let mut symbols = SymbolTable::<f64>::new();
-        assert_eq!(symbols.define(&name, a), Ok(()));
-        let a_result_from_symbols = symbols.get(&name);
+        assert_eq!(symbols.define(name, a), Ok(()));
+        let a_result_from_symbols = symbols.get(name);
         assert!(a_result_from_symbols.is_ok());
         if let Ok(a_from_symbols) = a_result_from_symbols {
             assert_close(a_from_symbols, a);
@@ -57,17 +57,17 @@ mod tests {
 
     #[test]
     fn redefined() {
-        let name = "a".into();
+        let name = "a";
         let a = 1.0;
         let mut symbols = SymbolTable::<f64>::new();
-        assert_eq!(symbols.define(&name, a), Ok(()));
-        assert_eq!(symbols.define(&name, a), Err(SymbolError::ReDefinition));
+        assert_eq!(symbols.define(name, a), Ok(()));
+        assert_eq!(symbols.define(name, a), Err(SymbolError::ReDefinition));
     }
 
     #[test]
     fn undefined() {
-        let name = "a".into();
+        let name = "a";
         let mut symbols = SymbolTable::<f64>::new();
-        assert_eq!(symbols.get(&name), Err(SymbolError::UnDefinition));
+        assert_eq!(symbols.get(name), Err(SymbolError::UnDefinition));
     }
 }

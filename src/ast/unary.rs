@@ -19,6 +19,7 @@ impl UnaryArithmetic {
     }
 }
 
+#[allow(clippy::from_over_into)]
 impl Into<Expr> for UnaryArithmetic {
     fn into(self) -> Expr {
         Expr::UnaryArithmetic(Box::new(self))

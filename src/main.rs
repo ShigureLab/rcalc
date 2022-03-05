@@ -81,13 +81,13 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
 
             if !cli.pure {
-                println!("");
+                println!();
             }
             Ok(())
         }
         Err(e) => {
             let (err_line, err_col) = (e.location.line, e.location.column);
-            let error_line = input.split("\n").collect::<Vec<_>>()[err_line - 1];
+            let error_line = input.split('\n').collect::<Vec<_>>()[err_line - 1];
             println!(
                 "Unexpected char `{}` at line {}, column {}:",
                 error_line.chars().nth(err_col - 1).unwrap(),
@@ -95,7 +95,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                 err_col
             );
             println!("{}", error_line);
-            println!("{}{}", " ".repeat(err_col - 1), "^");
+            println!("{}^", " ".repeat(err_col - 1));
             println!("Excepct chars: {:?}", e.expected);
             Ok(())
         }

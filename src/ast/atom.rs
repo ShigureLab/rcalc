@@ -6,6 +6,7 @@ pub enum Atom {
     Number(f64),
 }
 
+#[allow(clippy::from_over_into)]
 impl Into<Expr> for Atom {
     fn into(self) -> Expr {
         Expr::Atom(self)

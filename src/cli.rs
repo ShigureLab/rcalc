@@ -1,4 +1,4 @@
-use clap::{AppSettings, Parser};
+use clap::Parser;
 use std::collections::HashMap;
 
 #[derive(Parser, Debug)]
@@ -6,7 +6,7 @@ use std::collections::HashMap;
 #[clap(author = "Nyakku Shigure <sigure.qaq@gmail.com>")]
 #[clap(version = "0.1")]
 #[clap(about = "A simple calculator.")]
-#[clap(global_setting(AppSettings::AllowNegativeNumbers))]
+#[clap(allow_negative_numbers = true)]
 pub struct Cli {
     pub expr: String,
 
@@ -49,53 +49,29 @@ pub struct Cli {
 
 pub fn get_variables(cli: &Cli) -> HashMap<String, f64> {
     let mut variables = HashMap::new();
-    match cli.a {
-        Some(a) => {
-            variables.insert("a".into(), a);
-        }
-        None => (),
+    if let Some(a) = cli.a {
+        variables.insert("a".into(), a);
     }
-    match cli.b {
-        Some(b) => {
-            variables.insert("b".into(), b);
-        }
-        None => (),
+    if let Some(b) = cli.b {
+        variables.insert("b".into(), b);
     }
-    match cli.c {
-        Some(c) => {
-            variables.insert("c".into(), c);
-        }
-        None => (),
+    if let Some(c) = cli.c {
+        variables.insert("c".into(), c);
     }
-    match cli.d {
-        Some(d) => {
-            variables.insert("d".into(), d);
-        }
-        None => (),
+    if let Some(d) = cli.d {
+        variables.insert("d".into(), d);
     }
-    match cli.e {
-        Some(e) => {
-            variables.insert("e".into(), e);
-        }
-        None => (),
+    if let Some(e) = cli.e {
+        variables.insert("e".into(), e);
     }
-    match cli.x {
-        Some(x) => {
-            variables.insert("x".into(), x);
-        }
-        None => (),
+    if let Some(x) = cli.x {
+        variables.insert("x".into(), x);
     }
-    match cli.y {
-        Some(y) => {
-            variables.insert("y".into(), y);
-        }
-        None => (),
+    if let Some(y) = cli.y {
+        variables.insert("y".into(), y);
     }
-    match cli.z {
-        Some(z) => {
-            variables.insert("z".into(), z);
-        }
-        None => (),
+    if let Some(z) = cli.z {
+        variables.insert("z".into(), z);
     }
     variables
 }

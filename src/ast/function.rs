@@ -12,6 +12,7 @@ impl FunctionCall {
     }
 }
 
+#[allow(clippy::from_over_into)]
 impl Into<Expr> for FunctionCall {
     fn into(self) -> Expr {
         Expr::FunctionCall(self)

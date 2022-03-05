@@ -21,6 +21,7 @@ impl BinaryArithmetic {
     }
 }
 
+#[allow(clippy::from_over_into)]
 impl Into<Expr> for BinaryArithmetic {
     fn into(self) -> Expr {
         Expr::BinaryArithmetic(Box::new(self))

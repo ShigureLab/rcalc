@@ -64,11 +64,11 @@ mod tests {
             calc_parser::expr("1 + 9 / 10"),
             Ok(BinaryArithmetic::new(
                 BinaryOp::Add,
-                Atom::Number(1 as f64).into(),
+                Atom::Number(1_f64).into(),
                 BinaryArithmetic::new(
                     BinaryOp::Div,
-                    Atom::Number(9 as f64).into(),
-                    Atom::Number(10 as f64).into(),
+                    Atom::Number(9_f64).into(),
+                    Atom::Number(10_f64).into(),
                 )
                 .into()
             )
@@ -80,11 +80,11 @@ mod tests {
                 BinaryOp::Div,
                 BinaryArithmetic::new(
                     BinaryOp::Add,
-                    Atom::Number(1 as f64).into(),
-                    Atom::Number(9 as f64).into(),
+                    Atom::Number(1_f64).into(),
+                    Atom::Number(9_f64).into(),
                 )
                 .into(),
-                Atom::Number(10 as f64).into(),
+                Atom::Number(10_f64).into(),
             )
             .into())
         );
@@ -98,11 +98,11 @@ mod tests {
                 BinaryOp::Div,
                 BinaryArithmetic::new(
                     BinaryOp::Mul,
-                    Atom::Number(1 as f64).into(),
-                    Atom::Number(9 as f64).into(),
+                    Atom::Number(1_f64).into(),
+                    Atom::Number(9_f64).into(),
                 )
                 .into(),
-                Atom::Number(10 as f64).into(),
+                Atom::Number(10_f64).into(),
             )
             .into())
         );
@@ -111,7 +111,7 @@ mod tests {
             Ok(BinaryArithmetic::new(
                 BinaryOp::Mul,
                 Atom::Ident("a".into()).into(),
-                Atom::Number(9 as f64).into(),
+                Atom::Number(9_f64).into(),
             )
             .into())
         );
@@ -119,7 +119,7 @@ mod tests {
             calc_parser::term("9 * a"),
             Ok(BinaryArithmetic::new(
                 BinaryOp::Mul,
-                Atom::Number(9 as f64).into(),
+                Atom::Number(9_f64).into(),
                 Atom::Ident("a".into()).into(),
             )
             .into())
@@ -166,8 +166,8 @@ mod tests {
             calc_parser::factor("(1+2)"),
             Ok(BinaryArithmetic::new(
                 BinaryOp::Add,
-                Atom::Number(1 as f64).into(),
-                Atom::Number(2 as f64).into(),
+                Atom::Number(1_f64).into(),
+                Atom::Number(2_f64).into(),
             )
             .into(),)
         );
@@ -187,7 +187,7 @@ mod tests {
             calc_parser::function_call("log(2, 4)"),
             Ok(FunctionCall::new(
                 "log".into(),
-                vec![Atom::Number(2 as f64).into(), Atom::Number(4 as f64).into()]
+                vec![Atom::Number(2_f64).into(), Atom::Number(4_f64).into()]
             )
             .into())
         );
@@ -198,18 +198,12 @@ mod tests {
     #[test]
     fn number() {
         assert_eq!(calc_parser::number("0"), Ok(Atom::Number(0 as f64).into()));
-        assert_eq!(
-            calc_parser::number("0.1"),
-            Ok(Atom::Number(0.1 as f64).into())
-        );
+        assert_eq!(calc_parser::number("0.1"), Ok(Atom::Number(0.1_f64).into()));
         assert_eq!(
             calc_parser::number("2.333"),
-            Ok(Atom::Number(2.333 as f64).into())
+            Ok(Atom::Number(2.333_f64).into())
         );
-        assert_eq!(
-            calc_parser::number("42"),
-            Ok(Atom::Number(42 as f64).into())
-        );
+        assert_eq!(calc_parser::number("42"), Ok(Atom::Number(42_f64).into()));
         assert!(calc_parser::number("00").is_err());
         assert!(calc_parser::number("o").is_err());
     }

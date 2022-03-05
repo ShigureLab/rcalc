@@ -27,39 +27,35 @@ impl Calculator {
         }
     }
 
-    pub fn define_variable(&mut self, name: &String, value: f64) -> Result<(), SymbolError> {
+    pub fn define_variable(&mut self, name: &str, value: f64) -> Result<(), SymbolError> {
         self.variables.define(name, value)
     }
 
-    pub fn define_function(&mut self, name: &String, value: Func<f64>) -> Result<(), SymbolError> {
+    pub fn define_function(&mut self, name: &str, value: Func<f64>) -> Result<(), SymbolError> {
         self.functions.define(name, value)
     }
 
     pub fn preset(&mut self) -> Result<(), SymbolError> {
-        self.define_variable(&"PI".into(), consts::PI)?;
-        self.define_variable(&"TAU".into(), consts::TAU)?;
-        self.define_variable(&"E".into(), consts::E)?;
+        self.define_variable("PI", consts::PI)?;
+        self.define_variable("TAU", consts::TAU)?;
+        self.define_variable("E", consts::E)?;
 
-        self.define_function(&"log".into(), |argv| f64::log(argv[1], argv[0]))?;
-        self.define_function(&"ln".into(), |argv| f64::ln(argv[0]))?;
-        self.define_function(&"log_2".into(), |argv| f64::log2(argv[0]))?;
-        self.define_function(&"log_10".into(), |argv| f64::log10(argv[0]))?;
-        self.define_function(&"add".into(), |argv| argv[0] + argv[1])?;
-        self.define_function(&"sum".into(), |argv| argv.iter().sum())?;
-        self.define_function(&"pow".into(), |argv| f64::powf(argv[0], argv[1]))?;
-        self.define_function(&"sqrt".into(), |argv| f64::sqrt(argv[0]))?;
-        self.define_function(&"max".into(), |argv| {
-            argv.iter().copied().fold(f64::NAN, f64::max)
-        })?;
-        self.define_function(&"min".into(), |argv| {
-            argv.iter().copied().fold(f64::NAN, f64::min)
-        })?;
-        self.define_function(&"sin".into(), |argv| f64::sin(argv[0]))?;
-        self.define_function(&"cos".into(), |argv| f64::cos(argv[0]))?;
-        self.define_function(&"tan".into(), |argv| f64::tan(argv[0]))?;
-        self.define_function(&"floor".into(), |argv| f64::floor(argv[0]))?;
-        self.define_function(&"ceil".into(), |argv| f64::ceil(argv[0]))?;
-        self.define_function(&"abs".into(), |argv| f64::abs(argv[0]))?;
+        self.define_function("log", |argv| f64::log(argv[1], argv[0]))?;
+        self.define_function("ln", |argv| f64::ln(argv[0]))?;
+        self.define_function("log_2", |argv| f64::log2(argv[0]))?;
+        self.define_function("log_10", |argv| f64::log10(argv[0]))?;
+        self.define_function("add", |argv| argv[0] + argv[1])?;
+        self.define_function("sum", |argv| argv.iter().sum())?;
+        self.define_function("pow", |argv| f64::powf(argv[0], argv[1]))?;
+        self.define_function("sqrt", |argv| f64::sqrt(argv[0]))?;
+        self.define_function("max", |argv| argv.iter().copied().fold(f64::NAN, f64::max))?;
+        self.define_function("min", |argv| argv.iter().copied().fold(f64::NAN, f64::min))?;
+        self.define_function("sin", |argv| f64::sin(argv[0]))?;
+        self.define_function("cos", |argv| f64::cos(argv[0]))?;
+        self.define_function("tan", |argv| f64::tan(argv[0]))?;
+        self.define_function("floor", |argv| f64::floor(argv[0]))?;
+        self.define_function("ceil", |argv| f64::ceil(argv[0]))?;
+        self.define_function("abs", |argv| f64::abs(argv[0]))?;
         Ok(())
     }
 
@@ -154,19 +150,20 @@ mod tests {
     #[test]
     fn calc_number() {
         let input = "2.333333333";
-        let parsed_input = calc_parser::expr(&input).unwrap();
+        let parsed_input = calc_parser::expr(input).unwrap();
         let mut calculator = Calculator::new();
         calculator.visit_expr(&parsed_input);
         assert_close(calculator.result().unwrap(), 2.333333333);
     }
 
+    #[allow(clippy::approx_constant)]
     #[test]
     fn custom_variable() {
         let input = "var";
         let value = 3.141592653589;
-        let parsed_input = calc_parser::expr(&input).unwrap();
+        let parsed_input = calc_parser::expr(input).unwrap();
         let mut calculator = Calculator::new();
-        assert_eq!(calculator.define_variable(&input.into(), value), Ok(()));
+        assert_eq!(calculator.define_variable(input, value), Ok(()));
         calculator.visit_expr(&parsed_input);
         assert_close(calculator.result().unwrap(), value);
     }
@@ -179,7 +176,7 @@ mod tests {
         let parsed_input = calc_parser::expr(&input).unwrap();
         let mut calculator = Calculator::new();
         assert_eq!(
-            calculator.define_function(&"mul".into(), |args| args[0] * args[1]),
+            calculator.define_function("mul", |args| args[0] * args[1]),
             Ok(())
         );
         calculator.visit_expr(&parsed_input);
@@ -190,7 +187,7 @@ mod tests {
     fn calc_preset() {
         let input = "sqrt(PI * E) - log(2, 3)";
         let value = f64::sqrt(consts::PI * consts::E) - f64::log(3.0, 2.0);
-        let parsed_input = calc_parser::expr(&input).unwrap();
+        let parsed_input = calc_parser::expr(input).unwrap();
         let mut calculator = Calculator::new();
         assert_eq!(calculator.preset(), Ok(()));
         calculator.visit_expr(&parsed_input);

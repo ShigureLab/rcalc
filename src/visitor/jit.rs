@@ -33,7 +33,7 @@ impl<'ctx> CalculatorJIT<'ctx> {
             .unwrap();
         CalculatorJIT {
             variables: SymbolTable::new(),
-            context: &context,
+            context,
             module,
             builder: context.create_builder(),
             execution_engine,
@@ -45,7 +45,7 @@ impl<'ctx> CalculatorJIT<'ctx> {
         self.context.f64_type()
     }
 
-    pub fn define_variable(&mut self, name: &String, value: f64) -> Result<(), SymbolError> {
+    pub fn define_variable(&mut self, name: &str, value: f64) -> Result<(), SymbolError> {
         let var = self
             .module
             .add_global(self.double(), Some(AddressSpace::Global), name);
@@ -58,19 +58,16 @@ impl<'ctx> CalculatorJIT<'ctx> {
         Ok(())
     }
 
-    fn get_variable(&mut self, name: &String) -> Result<FloatValue<'ctx>, SymbolError> {
+    fn get_variable(&mut self, name: &str) -> Result<FloatValue<'ctx>, SymbolError> {
         let alloca = self.variables.get(name)?;
-        let var = self
-            .builder
-            .build_load(alloca, name.as_str())
-            .into_float_value();
+        let var = self.builder.build_load(alloca, name).into_float_value();
 
         Ok(var)
     }
 
     pub fn define_function(
         &mut self,
-        name: &String,
+        name: &str,
         argc: usize,
         func: FuncLLVM<'ctx, FloatValue<'ctx>>,
     ) -> Result<(), SymbolError> {
@@ -82,7 +79,7 @@ impl<'ctx> CalculatorJIT<'ctx> {
         let args_types = args_types.as_slice();
 
         let fn_type = self.double().fn_type(args_types, false);
-        let fn_val = self.module.add_function(name.as_str(), fn_type, None);
+        let fn_val = self.module.add_function(name, fn_type, None);
         let entry = self.context.append_basic_block(fn_val, "entry");
         self.builder.position_at_end(entry);
 
@@ -98,7 +95,7 @@ impl<'ctx> CalculatorJIT<'ctx> {
         Ok(())
     }
 
-    pub fn get_function(&mut self, name: &String) -> Result<FunctionValue<'ctx>, SymbolError> {
+    pub fn get_function(&mut self, name: &str) -> Result<FunctionValue<'ctx>, SymbolError> {
         match self.module.get_function(name) {
             Some(func) => Ok(func),
             None => Err(SymbolError::UnDefinition),
@@ -106,11 +103,11 @@ impl<'ctx> CalculatorJIT<'ctx> {
     }
 
     pub fn preset(&mut self) -> Result<(), SymbolError> {
-        self.define_variable(&"PI".into(), consts::PI)?;
-        self.define_variable(&"TAU".into(), consts::TAU)?;
-        self.define_variable(&"E".into(), consts::E)?;
+        self.define_variable("PI", consts::PI)?;
+        self.define_variable("TAU", consts::TAU)?;
+        self.define_variable("E", consts::E)?;
 
-        self.define_function(&"add".into(), 2, |args, builder| {
+        self.define_function("add", 2, |args, builder| {
             let a = args[0];
             let b = args[1];
             builder.build_float_add(a, b, "add")
@@ -203,7 +200,7 @@ mod tests {
     #[test]
     fn calc_number() {
         let input = "2.333333333";
-        let parsed_input = calc_parser::expr(&input).unwrap();
+        let parsed_input = calc_parser::expr(input).unwrap();
         let context = Context::create();
         let mut calculator_jit = CalculatorJIT::new(&context);
         let calc_main = calculator_jit.compile(&parsed_input).unwrap();
@@ -211,14 +208,15 @@ mod tests {
         assert_close(result, 2.333333333);
     }
 
+    #[allow(clippy::approx_constant)]
     #[test]
     fn custom_variable() {
         let input = "var";
         let value = 3.141592653589;
-        let parsed_input = calc_parser::expr(&input).unwrap();
+        let parsed_input = calc_parser::expr(input).unwrap();
         let context = Context::create();
         let mut calculator_jit = CalculatorJIT::new(&context);
-        assert_eq!(calculator_jit.define_variable(&input.into(), value), Ok(()));
+        assert_eq!(calculator_jit.define_variable(input, value), Ok(()));
         let calc_main = calculator_jit.compile(&parsed_input).unwrap();
         let result = unsafe { calc_main.call() };
         assert_close(result, value);
@@ -233,7 +231,7 @@ mod tests {
         let context = Context::create();
         let mut calculator_jit = CalculatorJIT::new(&context);
         assert_eq!(
-            calculator_jit.define_function(&"mul".into(), 2, |args, builder| {
+            calculator_jit.define_function("mul", 2, |args, builder| {
                 let a = args[0];
                 let b = args[1];
                 builder.build_float_mul(a, b, "mul")
@@ -249,7 +247,7 @@ mod tests {
     fn calc_preset() {
         let input = "1 - add(PI * E, TAU)";
         let value = 1. - (consts::PI * consts::E + consts::TAU);
-        let parsed_input = calc_parser::expr(&input).unwrap();
+        let parsed_input = calc_parser::expr(input).unwrap();
         let context = Context::create();
         let mut calculator_jit = CalculatorJIT::new(&context);
         assert_eq!(calculator_jit.preset(), Ok(()));
