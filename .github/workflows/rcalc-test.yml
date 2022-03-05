@@ -43,3 +43,11 @@ jobs:
         run: cargo build --release --verbose
       - name: Run tests
         run: cargo test --release --verbose
+      - name: E2E tests
+        run: |
+          [[ `cargo run --release -- -a=1 -b=-2 "a + b" --jit --pure` == "-1" ]]
+          [[ `cargo run --release -- -a=1 -b=-2 "a + b" --pure` == "-1" ]]
+          [[ `cargo run --release -- -a=1000 -b=7890 "a * b" --jit --pure` == "7890000" ]]
+          [[ `cargo run --release -- -a=1000 -b=7890 "a * b" --pure` == "7890000" ]]
+          [[ `cargo run --release -- -a=1000 -b=7890 "add(a, b)" --jit --pure` == "8890" ]]
+          [[ `cargo run --release -- -a=1000 -b=7890 "add(a, b)" --pure` == "8890" ]]
