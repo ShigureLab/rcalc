@@ -36,7 +36,7 @@ jobs:
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
             target/
-          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ runner.os }}-cargo-${{ env.LLVM_VERSION }}-${{ hashFiles('**/Cargo.lock') }}
       - name: Build
         if: steps.cargo-cache.outputs.cache-hit != 'true'
         run: cargo build --release --verbose
