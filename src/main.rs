@@ -7,10 +7,13 @@ mod visitor;
 
 use clap::Parser;
 use cli::{get_variables, Cli};
+#[cfg(feature = "jit")]
 use inkwell::context::Context;
 use parser::calc_parser;
 use std::error::Error;
-use visitor::{Calculator, CalculatorJIT, PrettyPrinter, Visitor};
+#[cfg(feature = "jit")]
+use visitor::CalculatorJIT;
+use visitor::{Calculator, PrettyPrinter, Visitor};
 
 fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
@@ -50,28 +53,35 @@ fn main() -> Result<(), Box<dyn Error>> {
                     print!("Calculator Interpret result: ");
                 };
             } else {
-                // JIT calc
-                let context = Context::create();
-                let mut calculator_jit = CalculatorJIT::new(&context);
-                calculator_jit.preset().unwrap();
-                // User defined variables and functions
-                // calculator_jit.define_variable(&"a".into(), 222.0).unwrap();
-                // calculator_jit
-                //     .define_function(&"mul".into(), 2, |args, builder| {
-                //         let a = args[0];
-                //         let b = args[1];
-                //         builder.build_float_mul(a, b, "mul")
-                //     })
-                //     .unwrap();
-                for (name, value) in variables {
-                    calculator_jit.define_variable(&name, value).unwrap();
+                #[cfg(not(feature = "jit"))]
+                {
+                    panic!("Unable to use feature `jit`");
                 }
-                let calc_main = calculator_jit.compile(&parsed_input).unwrap();
-                result = unsafe { calc_main.call() };
+                #[cfg(feature = "jit")]
+                {
+                    // JIT calc
+                    let context = Context::create();
+                    let mut calculator_jit = CalculatorJIT::new(&context);
+                    calculator_jit.preset().unwrap();
+                    // User defined variables and functions
+                    // calculator_jit.define_variable(&"a".into(), 222.0).unwrap();
+                    // calculator_jit
+                    //     .define_function(&"mul".into(), 2, |args, builder| {
+                    //         let a = args[0];
+                    //         let b = args[1];
+                    //         builder.build_float_mul(a, b, "mul")
+                    //     })
+                    //     .unwrap();
+                    for (name, value) in variables {
+                        calculator_jit.define_variable(&name, value).unwrap();
+                    }
+                    let calc_main = calculator_jit.compile(&parsed_input).unwrap();
+                    result = unsafe { calc_main.call() };
 
-                if !cli.pure {
-                    print!("JIT compile result: ");
-                };
+                    if !cli.pure {
+                        print!("JIT compile result: ");
+                    };
+                }
             }
             match cli.precision {
                 Some(precision) => {
