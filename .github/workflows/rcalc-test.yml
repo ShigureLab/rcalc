@@ -16,7 +16,7 @@ jobs:
         run: rustup update
       - name: Cache LLVM and Clang
         id: llvm-cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             C:/Program Files/LLVM
@@ -28,7 +28,7 @@ jobs:
           version: ${{ env.LLVM_VERSION }}
           cached: ${{ steps.cache-llvm.outputs.cache-hit }}
       - name: Cache cargo build
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         id: cargo-cache
         with:
           path: |
