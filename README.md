@@ -9,12 +9,12 @@
 
 一个使用 Rust 编写的简单计算器，可通过 LLVM 进行 JIT 编译。
 
-探索博客见[nyakku.moe](https://nyakku.moe/posts/2022/01/21/lets-make-a-calculator-using-rust-and-llvm.html)
+探索博客见 [nyakku.moe](https://nyakku.moe/posts/2022/01/21/lets-make-a-calculator-using-rust-and-llvm.html)
 
 ## Usage
 
 ```bash
-cargo run -- -a=1 -b=-2 "a + b / PI" --jit
+cargo run --features="jit" -- -a=1 -b=-2 "a + b / PI" --jit
 ```
 
 ## References
