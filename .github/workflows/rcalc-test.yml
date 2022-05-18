@@ -23,7 +23,7 @@ jobs:
             ./llvm
           key: ${{ runner.os }}-llvm-${{ env.LLVM_VERSION }}
       - name: Install LLVM and Clang
-        uses: KyleMayes/install-llvm-action@v1.5.2
+        uses: KyleMayes/install-llvm-action@v1.5.3
         with:
           version: ${{ env.LLVM_VERSION }}
           cached: ${{ steps.cache-llvm.outputs.cache-hit }}
