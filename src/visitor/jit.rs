@@ -48,7 +48,7 @@ impl<'ctx> CalculatorJIT<'ctx> {
     pub fn define_variable(&mut self, name: &str, value: f64) -> Result<(), SymbolError> {
         let var = self
             .module
-            .add_global(self.double(), Some(AddressSpace::Global), name);
+            .add_global(self.double(), Some(AddressSpace::default()), name);
 
         let initial_value = self.double().const_float(value);
         var.set_initializer(&initial_value);
