@@ -40,9 +40,9 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ env.LLVM_VERSION }}-${{ hashFiles('**/Cargo.lock') }}
       - name: Build
         if: steps.cargo-cache.outputs.cache-hit != 'true'
-        run: cargo build --release --verbose
+        run: cargo build --features="jit" --release --verbose
       - name: Run tests
-        run: cargo test --release --verbose
+        run: cargo test --features="jit" --release --verbose
       - name: E2E tests
         run: |
           [[ `cargo run --release --features="jit" -- -a=1 -b=-2 "a + b" --jit --pure` == "-1" ]]
