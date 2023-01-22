@@ -60,7 +60,10 @@ impl<'ctx> CalculatorJIT<'ctx> {
 
     fn get_variable(&mut self, name: &str) -> Result<FloatValue<'ctx>, SymbolError> {
         let alloca = self.variables.get(name)?;
-        let var = self.builder.build_load(alloca, name).into_float_value();
+        let var = self
+            .builder
+            .build_load(self.double(), alloca, name)
+            .into_float_value();
 
         Ok(var)
     }
