@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 env:
   CARGO_TERM_COLOR: always
-  LLVM_VERSION: 14.0
+  LLVM_VERSION: 15.0
 
 jobs:
   test-rcalc:
