@@ -84,78 +84,78 @@ mod tests {
     #[test]
     fn common() {
         let expr = "a * b + 9";
-        let cli = Cli::parse_from(&["rcalc", expr]);
+        let cli = Cli::parse_from(["rcalc", expr]);
         assert_eq!(expr, cli.expr);
     }
 
     #[test]
     fn jit() {
         let expr = "expr";
-        let cli = Cli::parse_from(&["rcalc", expr]);
+        let cli = Cli::parse_from(["rcalc", expr]);
         assert!(!cli.jit);
 
-        let cli = Cli::parse_from(&["rcalc", expr, "-j"]);
+        let cli = Cli::parse_from(["rcalc", expr, "-j"]);
         assert!(cli.jit);
 
-        let cli = Cli::parse_from(&["rcalc", expr, "--jit"]);
+        let cli = Cli::parse_from(["rcalc", expr, "--jit"]);
         assert!(cli.jit);
     }
 
     #[test]
     fn verbose() {
         let expr = "expr";
-        let cli = Cli::parse_from(&["rcalc", expr]);
+        let cli = Cli::parse_from(["rcalc", expr]);
         assert!(!cli.verbose);
 
-        let cli = Cli::parse_from(&["rcalc", expr, "-v"]);
+        let cli = Cli::parse_from(["rcalc", expr, "-v"]);
         assert!(cli.verbose);
 
-        let cli = Cli::parse_from(&["rcalc", expr, "--verbose"]);
+        let cli = Cli::parse_from(["rcalc", expr, "--verbose"]);
         assert!(cli.verbose);
     }
 
     #[test]
     fn precision() {
         let expr = "expr";
-        let cli = Cli::parse_from(&["rcalc", expr]);
+        let cli = Cli::parse_from(["rcalc", expr]);
         assert_eq!(cli.precision, None);
 
-        let cli = Cli::parse_from(&["rcalc", expr, "-p", "3"]);
+        let cli = Cli::parse_from(["rcalc", expr, "-p", "3"]);
         assert_eq!(cli.precision, Some(3));
 
-        let cli = Cli::parse_from(&["rcalc", expr, "-p=5"]);
+        let cli = Cli::parse_from(["rcalc", expr, "-p=5"]);
         assert_eq!(cli.precision, Some(5));
 
-        let cli = Cli::parse_from(&["rcalc", expr, "--precision", "7"]);
+        let cli = Cli::parse_from(["rcalc", expr, "--precision", "7"]);
         assert_eq!(cli.precision, Some(7));
 
-        let cli = Cli::parse_from(&["rcalc", expr, "--precision=9"]);
+        let cli = Cli::parse_from(["rcalc", expr, "--precision=9"]);
         assert_eq!(cli.precision, Some(9));
     }
 
     #[test]
     fn pure() {
         let expr = "expr";
-        let cli = Cli::parse_from(&["rcalc", expr]);
+        let cli = Cli::parse_from(["rcalc", expr]);
         assert!(!cli.pure);
 
-        let cli = Cli::parse_from(&["rcalc", expr, "--pure"]);
+        let cli = Cli::parse_from(["rcalc", expr, "--pure"]);
         assert!(cli.pure);
     }
 
     #[test]
     fn variables() {
         let expr = "expr";
-        let cli = Cli::parse_from(&["rcalc", expr]);
+        let cli = Cli::parse_from(["rcalc", expr]);
         let variables = get_variables(&cli);
         assert!(variables.is_empty());
 
-        let cli = Cli::parse_from(&["rcalc", expr, "-a", "-1.1"]);
+        let cli = Cli::parse_from(["rcalc", expr, "-a", "-1.1"]);
         let variables = get_variables(&cli);
         assert_eq!(variables.get("b"), None);
         assert_close(variables["a"], -1.1);
 
-        let cli = Cli::parse_from(&["rcalc", expr, "-b=-0.999"]);
+        let cli = Cli::parse_from(["rcalc", expr, "-b=-0.999"]);
         let variables = get_variables(&cli);
         assert_close(variables["b"], -0.999);
     }
