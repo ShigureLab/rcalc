@@ -2,48 +2,45 @@ use clap::Parser;
 use std::collections::HashMap;
 
 #[derive(Parser, Debug)]
-#[clap(name = "rcalc")]
-#[clap(author = "Nyakku Shigure <sigure.qaq@gmail.com>")]
-#[clap(version = "0.1")]
-#[clap(about = "A simple calculator.")]
-#[clap(allow_negative_numbers = true)]
+#[command(author, version, about, long_about = None)]
+#[command(allow_negative_numbers = true)]
 pub struct Cli {
     pub expr: String,
 
-    #[clap(short, long)]
+    #[arg(short, long)]
     pub jit: bool,
 
-    #[clap(short, long)]
+    #[arg(short, long)]
     pub verbose: bool,
 
-    #[clap(short, long)]
+    #[arg(short, long)]
     pub precision: Option<usize>,
 
-    #[clap(long)]
+    #[arg(long)]
     pub pure: bool,
 
-    #[clap(short)]
+    #[arg(short)]
     pub a: Option<f64>,
 
-    #[clap(short)]
+    #[arg(short)]
     pub b: Option<f64>,
 
-    #[clap(short)]
+    #[arg(short)]
     pub c: Option<f64>,
 
-    #[clap(short)]
+    #[arg(short)]
     pub d: Option<f64>,
 
-    #[clap(short)]
+    #[arg(short)]
     pub e: Option<f64>,
 
-    #[clap(short)]
+    #[arg(short)]
     pub x: Option<f64>,
 
-    #[clap(short)]
+    #[arg(short)]
     pub y: Option<f64>,
 
-    #[clap(short)]
+    #[arg(short)]
     pub z: Option<f64>,
 }
 

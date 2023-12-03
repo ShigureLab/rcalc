@@ -1,6 +1,9 @@
 [package]
 name = "rcalc"
 version = "0.1.0"
+authors = ["Nyakku Shigure <sigure.qaq@gmail.com>"]
+description = "A simple calculator."
+license = "MIT"
 edition = "2021"
 
 [features]
