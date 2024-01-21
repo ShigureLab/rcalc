@@ -259,7 +259,9 @@ mod tests {
             calculator_jit.define_function("mul", 2, |args, builder| {
                 let a = args[0];
                 let b = args[1];
-                builder.build_float_mul(a, b, "mul")
+                builder
+                    .build_float_mul(a, b, "mul")
+                    .expect("Failed to build mul")
             }),
             Ok(())
         );
