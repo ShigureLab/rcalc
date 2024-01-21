@@ -1,6 +1,11 @@
 name: Rcalc Test
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [main]
+  pull_request:
+  merge_group:
+  workflow_dispatch:
 
 env:
   CARGO_TERM_COLOR: always
