@@ -63,6 +63,7 @@ impl<'ctx> CalculatorJIT<'ctx> {
         let var = self
             .builder
             .build_load(self.double(), alloca, name)
+            .expect("Failed to load variable")
             .into_float_value();
 
         Ok(var)
@@ -93,7 +94,9 @@ impl<'ctx> CalculatorJIT<'ctx> {
 
         let ret_val = func(args, &self.builder);
 
-        self.builder.build_return(Some(&ret_val));
+        self.builder
+            .build_return(Some(&ret_val))
+            .expect("Failed to build return");
 
         Ok(())
     }
@@ -113,9 +116,10 @@ impl<'ctx> CalculatorJIT<'ctx> {
         self.define_function("add", 2, |args, builder| {
             let a = args[0];
             let b = args[1];
-            builder.build_float_add(a, b, "add")
-        })
-        .unwrap();
+            builder
+                .build_float_add(a, b, "add")
+                .expect("Failed to build add")
+        })?;
         // Other ops is too complex to hand-write LLVM code...
         Ok(())
     }
@@ -128,7 +132,9 @@ impl<'ctx> CalculatorJIT<'ctx> {
         self.builder.position_at_end(basic_block);
 
         let ret = self.visit_expr(ast);
-        self.builder.build_return(Some(&ret));
+        self.builder
+            .build_return(Some(&ret))
+            .expect("Failed to build return");
 
         unsafe { self.execution_engine.get_function(CALC_ENTRYPOINT).ok() }
     }
@@ -148,7 +154,10 @@ impl<'ctx> Visitor<FloatValue<'ctx>> for CalculatorJIT<'ctx> {
 
         match u.op {
             UnaryOp::Pos => value,
-            UnaryOp::Neg => self.builder.build_float_neg(value, "neg"),
+            UnaryOp::Neg => self
+                .builder
+                .build_float_neg(value, "neg")
+                .expect("Failed to build neg"),
             UnaryOp::Fac => unimplemented!(),
         }
     }
@@ -157,10 +166,22 @@ impl<'ctx> Visitor<FloatValue<'ctx>> for CalculatorJIT<'ctx> {
         let lhs = self.visit_expr(&b.lhs);
         let rhs = self.visit_expr(&b.rhs);
         match b.op {
-            BinaryOp::Add => self.builder.build_float_add(lhs, rhs, "add"),
-            BinaryOp::Sub => self.builder.build_float_sub(lhs, rhs, "sub"),
-            BinaryOp::Mul => self.builder.build_float_mul(lhs, rhs, "mul"),
-            BinaryOp::Div => self.builder.build_float_div(lhs, rhs, "div"),
+            BinaryOp::Add => self
+                .builder
+                .build_float_add(lhs, rhs, "add")
+                .expect("Failed to build add"),
+            BinaryOp::Sub => self
+                .builder
+                .build_float_sub(lhs, rhs, "sub")
+                .expect("Failed to build sub"),
+            BinaryOp::Mul => self
+                .builder
+                .build_float_mul(lhs, rhs, "mul")
+                .expect("Failed to build mul"),
+            BinaryOp::Div => self
+                .builder
+                .build_float_div(lhs, rhs, "div")
+                .expect("Failed to build div"),
         }
     }
 
@@ -179,6 +200,7 @@ impl<'ctx> Visitor<FloatValue<'ctx>> for CalculatorJIT<'ctx> {
         let ret_val = self
             .builder
             .build_call(func, argsv.as_slice(), "tmp")
+            .expect("Unable to call function")
             .try_as_basic_value()
             .left()
             .unwrap();
@@ -237,7 +259,9 @@ mod tests {
             calculator_jit.define_function("mul", 2, |args, builder| {
                 let a = args[0];
                 let b = args[1];
-                builder.build_float_mul(a, b, "mul")
+                builder
+                    .build_float_mul(a, b, "mul")
+                    .expect("Failed to build mul")
             }),
             Ok(())
         );

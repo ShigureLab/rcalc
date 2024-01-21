@@ -1,10 +1,15 @@
 name: Rcalc Test
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [main]
+  pull_request:
+  merge_group:
+  workflow_dispatch:
 
 env:
   CARGO_TERM_COLOR: always
-  LLVM_VERSION: 16.0
+  LLVM_VERSION: 17.0
 
 jobs:
   test-rcalc:
@@ -16,7 +21,7 @@ jobs:
         run: rustup update
       - name: Cache LLVM and Clang
         id: llvm-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             C:/Program Files/LLVM
