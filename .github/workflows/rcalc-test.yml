@@ -9,7 +9,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  LLVM_VERSION: 18.1.6
+  LLVM_VERSION: 18.1.4
 
 jobs:
   test-rcalc:
