@@ -9,18 +9,18 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  LLVM_VERSION: 17.0
+  LLVM_VERSION: 18.1
 
 jobs:
   test-rcalc:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04 # For LLVM18
     steps:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Update rust toolchain
         run: rustup update
       - name: Install LLVM and Clang
-        uses: KyleMayes/install-llvm-action@v2.0.5
+        uses: KyleMayes/install-llvm-action@v2
         with:
           version: ${{ env.LLVM_VERSION }}
       - name: Cache cargo build
