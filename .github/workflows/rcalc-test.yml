@@ -20,7 +20,7 @@ jobs:
       - name: Update rust toolchain
         run: rustup update
       - name: Install LLVM and Clang
-        uses: KyleMayes/install-llvm-action@v2.0.5
+        uses: KyleMayes/install-llvm-action@v2
         with:
           version: ${{ env.LLVM_VERSION }}
       - name: Cache cargo build
