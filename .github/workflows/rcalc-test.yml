@@ -9,7 +9,8 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
-  LLVM_VERSION: 18.1
+  LLVM_VERSION: 21.1
+  LLVM_VERSION_MAJOR: 21
 
 jobs:
   test-rcalc:
@@ -22,9 +23,18 @@ jobs:
       - name: Update rust toolchain
         run: rustup update
       - name: Install LLVM and Clang
-        uses: KyleMayes/install-llvm-action@v2
-        with:
-          version: ${{ env.LLVM_VERSION }}
+        run: |
+          sudo apt install --no-install-recommends -y lsb-release wget software-properties-common gnupg
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh ${{ env.LLVM_VERSION_MAJOR }}
+          sudo apt-get update
+          sudo apt install --no-install-recommends -y libllvm${{ env.LLVM_VERSION_MAJOR }} \
+                                                      llvm-${{ env.LLVM_VERSION_MAJOR }} \
+                                                      llvm-${{ env.LLVM_VERSION_MAJOR }}-dev \
+                                                      llvm-${{ env.LLVM_VERSION_MAJOR }}-runtime \
+                                                      libpolly-${{ env.LLVM_VERSION_MAJOR }}-dev
+          sudo update-alternatives --install /usr/bin/llvm-config llvm-config /usr/bin/llvm-config-${{ env.LLVM_VERSION_MAJOR }} 10
       - name: Run llvm-config
         run: llvm-config --version --bindir --libdir
       - name: Cache cargo build

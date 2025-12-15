@@ -76,8 +76,7 @@ impl<'ctx> CalculatorJIT<'ctx> {
         func: FuncLLVM<'ctx, FloatValue<'ctx>>,
     ) -> Result<(), SymbolError> {
         let ret_type = self.double();
-        let args_types = std::iter::repeat(ret_type)
-            .take(argc)
+        let args_types = std::iter::repeat_n(ret_type, argc)
             .map(|f| f.into())
             .collect::<Vec<BasicMetadataTypeEnum>>();
         let args_types = args_types.as_slice();
@@ -124,7 +123,7 @@ impl<'ctx> CalculatorJIT<'ctx> {
         Ok(())
     }
 
-    pub fn compile(&mut self, ast: &Expr) -> Option<JitFunction<CalcMain>> {
+    pub fn compile(&mut self, ast: &Expr) -> Option<JitFunction<'_, CalcMain>> {
         let sig = self.double().fn_type(&[], false);
         let func = self.module.add_function(CALC_ENTRYPOINT, sig, None);
         let basic_block = self.context.append_basic_block(func, "entry");
@@ -202,8 +201,7 @@ impl<'ctx> Visitor<FloatValue<'ctx>> for CalculatorJIT<'ctx> {
             .build_call(func, argsv.as_slice(), "tmp")
             .expect("Unable to call function")
             .try_as_basic_value()
-            .left()
-            .unwrap();
+            .unwrap_basic();
 
         ret_val.into_float_value()
     }
